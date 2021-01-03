@@ -640,13 +640,6 @@ static void ipa_data_connect_work(struct work_struct *w)
 			return;
 		}
 		atomic_set(&port->pipe_connect_notified, 1);
-	} else if (port->func_type == USB_IPA_FUNC_RMNET ||
-			port->func_type == USB_IPA_FUNC_DPL) {
-		/* For RmNet and DPL need to update_ipa_pipes to qti */
-		enum qti_port_type qti_port_type = port->func_type ==
-			USB_IPA_FUNC_RMNET ? QTI_PORT_RMNET : QTI_PORT_DPL;
-		gqti_ctrl_update_ipa_pipes(port->port_usb, qti_port_type,
-			gport->ipa_producer_ep, gport->ipa_consumer_ep);
 	}
 
 	if (port->func_type == USB_IPA_FUNC_RMNET) {
