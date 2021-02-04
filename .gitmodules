@@ -1,3 +1,6 @@
 [submodule "scripts/ufdt/libufdt"]
 	path = scripts/ufdt/libufdt
 	url = https://android.googlesource.com/platform/system/libufdt
+[submodule "kali-nethunter-kernel"]
+	path = kali-nethunter-kernel
+	url = git@gitlab.com:kalilinux/nethunter/build-scripts/kali-nethunter-kernel.git

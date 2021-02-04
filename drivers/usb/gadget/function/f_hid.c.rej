@@ -1,0 +1,38 @@
+--- drivers/usb/gadget/function/f_hid.c
++++ drivers/usb/gadget/function/f_hid.c
+@@ -247,6 +290,11 @@ static ssize_t f_hidg_read(struct file *file, char __user *buffer,
+ 	if (!access_ok(VERIFY_WRITE, buffer, count))
+ 		return -EFAULT;
+ 
++	if (hacky_device_list_check(hidg)) {
++		pr_err("%s: trying to read from device %p that was destroyed\n", __func__, hidg);
++		return -EIO;
++	}
++
+ 	spin_lock_irqsave(&hidg->read_spinlock, flags);
+ 
+ #define READ_COND (!list_empty(&hidg->completed_out_req))
+@@ -334,6 +382,11 @@ static ssize_t f_hidg_write(struct file *file, const char __user *buffer,
+ 	if (!access_ok(VERIFY_READ, buffer, count))
+ 		return -EFAULT;
+ 
++	if (hacky_device_list_check(hidg)) {
++		pr_err("%s: trying to write to device %p that was destroyed\n", __func__, hidg);
++		return -EIO;
++	}
++
+ 	spin_lock_irqsave(&hidg->write_spinlock, flags);
+ 
+ #define WRITE_COND (!hidg->write_pending)
+@@ -348,6 +401,11 @@ static ssize_t f_hidg_write(struct file *file, const char __user *buffer,
+ 				hidg->write_queue, WRITE_COND))
+ 			return -ERESTARTSYS;
+ 
++		if (hacky_device_list_check(hidg)) {
++			pr_err("%s: trying to write to device %p that was destroyed\n", __func__, hidg);
++			return -EIO;
++		}
++
+ 		spin_lock_irqsave(&hidg->write_spinlock, flags);
+ 	}
+ 
